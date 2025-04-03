@@ -9,7 +9,6 @@ import RegisterButton from './components/RegistrationButton.vue';
   <div class="app-container">
     <!-- Header Component -->
     <Header />
-    <SearchBox />
     <ItemContainer />
     <RegisterButton />
 
@@ -26,25 +25,46 @@ import RegisterButton from './components/RegistrationButton.vue';
 </template>
 
 <style>
+
 /* Global Styles */
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;  /* Full width */
+  height: 100vh; /* Full height */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+  width: 100vw; /* Ensure it spans the full width */
+  overflow-x: hidden;
+}
+
 
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   color: #333;
   line-height: 1.6;
+  width: 100%;
+  height: 100%; /* Ensure the body also fills the viewport height */
 }
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures full viewport height */
-}
+
+
 
 .content {
   flex: 1; /* Pushes the footer to the bottom */
@@ -58,6 +78,19 @@ body {
   text-align: center;
   padding: 10px 0;
 }
+
+.header, .footer {
+  width: 100vw; /* Make sure it spans full width */
+  max-width: 100%; /* Prevent overflow */
+  position: relative; /* Ensures no unwanted positioning */
+  left: 0;
+  padding: 10px 0;
+  text-align: center;
+  background-color: #333;
+  color: white;
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

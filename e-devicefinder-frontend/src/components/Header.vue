@@ -1,33 +1,75 @@
 <template>
   <header class="header">
     <nav>
-      <ul class="menu">
-        <li><a href="#signup">Sign Up</a></li>
-        <li><a href="#about">About Us</a></li>
+      <div class="search-container menu">
+        <a href="#">
+          <img :src="logo" alt="TrackIT Logo" class="logo" />
+        </a>
+      </div>
+
+      
+
+      <ul class="menu">      
+        <li><a href="#signup">Find Missing Item</a></li>
+        <li><a href="#signup">Report Missing</a></li>
+        <li><a href="#signup">Get Started</a></li>
         <li><a href="#login">Login</a></li>
+        <li><a href="#about">About Us</a></li>
         <li><a href="#contact">Contact Us</a></li>
+
+        <!-- Add the search bar here -->
+      <div class="search-container menu">
+        <input type="text" placeholder="Search items..." class="search-bar" />
+      </div>
       </ul>
+
+      
     </nav>
   </header>
 </template>
 
 <script>
+import logo from '../assets/images/trackit-logo.png';
+
+
 export default {
   name: 'Header',
+  data() {
+    return {
+      logo, // Assign the imported image to data
+    };
+  },
 }
 </script>
 
 <style scoped>
+
 /* Header Styling */
+
+
 .header {
+  width: 100vw; /* Make sure it spans full width */
+  max-width: 100%; /* Prevent overflow */
+  position: relative; /* Ensures no unwanted positioning */
+  left: 0;
+  padding: 10px 0;
+  text-align: center;
   background-color: #333;
-  color: #fff;
-  padding: 10px 20px;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: sticky; /* Keeps the header at the top while scrolling */
-  top: 0;
-  z-index: 1000; /* Ensures it stays above other content */
+  color: white;
+  align-items: center;
+}
+
+
+nav {
+  display: flex; /* Use flexbox to arrange items in a row */
+  justify-content: space-between; /* Space out the menu and search */
+  align-items: center; /* Vertically align items */
+  width: 100vw;
+}
+.logo {
+  width: 50px; /* Adjust the size of the logo */
+  height: auto; /* Keep aspect ratio */
+  border-radius: 70%;
 }
 
 .menu {
@@ -37,7 +79,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+  flex-grow: 1; /* Ensure the menu spans the available width */
 }
 
 .menu li {
@@ -59,6 +101,22 @@ export default {
   background-color: #555;
   color: #ffcc00;
   transform: scale(1.05);
+}
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar {
+  width: 300px;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  margin-left: 10px; /* Add some spacing between the navbar and the search bar */
 }
 
 /* Responsive Design */
