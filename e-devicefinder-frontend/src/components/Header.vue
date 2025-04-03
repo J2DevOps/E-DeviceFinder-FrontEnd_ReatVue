@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <nav>
-      <div class="search-container menu">
+      <div class="logo">
         <a href="#">
           <img :src="logo" alt="TrackIT Logo" class="logo" />
         </a>
@@ -9,18 +9,17 @@
 
       
 
-      <ul class="menu">      
-        <li><a href="#signup">Find Missing Item</a></li>
-        <li><a href="#signup">Report Missing</a></li>
-        <li><a href="#signup">Get Started</a></li>
-        <li><a href="#login">Login</a></li>
+      <ul class="menu nav-items">      
+        <li><a href="#">Home</a></li>
+        
+
+        <li class="search-container">
+          <input type="text" placeholder="Search items..." class="search-bar" />
+        </li>
+
         <li><a href="#about">About Us</a></li>
         <li><a href="#contact">Contact Us</a></li>
-
-        <!-- Add the search bar here -->
-      <div class="search-container menu">
-        <input type="text" placeholder="Search items..." class="search-bar" />
-      </div>
+        <li><a href="#login">Login</a></li>
       </ul>
 
       
@@ -66,15 +65,21 @@ nav {
   align-items: center; /* Vertically align items */
   width: 100vw;
 }
+
+.nav-items{
+  margin-right: 500px;
+}
+
 .logo {
   width: 50px; /* Adjust the size of the logo */
   height: auto; /* Keep aspect ratio */
   border-radius: 70%;
+  margin-left: 10px;
 }
 
 .menu {
   list-style-type: none;
-  margin: 0;
+  margin-right: 0;
   padding: 0;
   display: flex;
   justify-content: center;
@@ -83,7 +88,7 @@ nav {
 }
 
 .menu li {
-  margin: 0 15px;
+  margin: 0 10px;
 }
 
 .menu a {
@@ -110,13 +115,14 @@ nav {
 }
 
 .search-bar {
-  width: 300px;
+  width: 400px;
   background-color: white;
   padding: 8px 12px;
   border-radius: 10px;
   border: none;
   font-size: 1rem;
-  margin-left: 10px; /* Add some spacing between the navbar and the search bar */
+  margin-left: 2px; /* Add some spacing between the navbar and the search bar */
+  margin-right: 2px;
 }
 
 /* Responsive Design */
