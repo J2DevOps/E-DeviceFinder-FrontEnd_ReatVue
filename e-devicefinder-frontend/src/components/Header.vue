@@ -2,54 +2,69 @@
   <header class="header">
     <nav>
       <div class="logo">
-        <a href="#">
+        <router-link to="/">
           <img :src="logo" alt="TrackIT Logo" class="logo" />
-        </a>
+        </router-link>
       </div>
 
-      
+      <ul class="menu nav-items">
+        <!-- If on /admin route, show only Home + Logout -->
+        <li v-if="isAdmin" class="logout"><a href="#" @click.prevent="logout">Logout</a></li>
 
-      <ul class="menu">      
-        <li><a href="#">Home</a></li>
-        
-
-        <li class="search-container">
-          <input type="text" placeholder="Search items..." class="search-bar" />
-        </li>
-
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#contact">Contact Us</a></li>
-        <li><a href="#login">Login</a></li>
+        <!-- If not admin, show full menu -->
+        <template v-else>
+          <li><router-link to="/">Home</router-link></li>
+          <li class="search-container">
+            <!-- Bind input value to searchTerm -->
+            <input 
+              type="text" 
+              placeholder="Search items..." 
+              class="search-bar" 
+              v-model="searchTerm"
+              @input="handleSearch"
+            />
+          </li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li>
+            <a href="#" @click.prevent="$emit('show-login')">Login</a>
+          </li>
+        </template>
       </ul>
-
-      
     </nav>
   </header>
 </template>
 
-<script>
-import logo from '../assets/images/trackit-logo.png';
+<script setup>
+import logo from '../assets/images/trackit-logo.png'
+import { useRoute, useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
 
+const route = useRoute()
+const router = useRouter()
 
-export default {
-  name: 'Header',
-  data() {
-    return {
-      logo, // Assign the imported image to data
-    };
-  },
+// Reactive data for search term
+const searchTerm = ref('')
+
+// Computed to check if we're on the /admin route
+const isAdmin = computed(() => route.path === '/admin')
+
+// Handle the search query and emit it
+const handleSearch = () => {
+  // Emit the search term to parent component or handle the logic here
+  emit('update:search', searchTerm.value)
+}
+
+function logout() {
+  router.push('/')
 }
 </script>
 
 <style scoped>
-
-/* Header Styling */
-
-
 .header {
-  width: 100vw; /* Make sure it spans full width */
-  max-width: 100%; /* Prevent overflow */
-  position: relative; /* Ensures no unwanted positioning */
+  width: 100vw;
+  max-width: 100%;
+  position: relative;
   left: 0;
   padding: 10px 0;
   text-align: center;
@@ -58,18 +73,20 @@ export default {
   align-items: center;
 }
 
-
 nav {
-  display: flex; /* Use flexbox to arrange items in a row */
-  justify-content: space-between; /* Space out the menu and search */
-  align-items: center; /* Vertically align items */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100vw;
 }
 
+.nav-items {
+  margin-right: 500px;
+}
 
 .logo {
-  width: 50px; /* Adjust the size of the logo */
-  height: auto; /* Keep aspect ratio */
+  width: 50px;
+  height: auto;
   border-radius: 70%;
   margin-left: 10px;
 }
@@ -81,11 +98,15 @@ nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* Ensure the menu spans the available width */
+  flex-grow: 1;
 }
 
 .menu li {
   margin: 0 10px;
+}
+
+.menu li.logout {
+  margin-left: auto; /* Align logout to the right */
 }
 
 .menu a {
@@ -98,14 +119,12 @@ nav {
   transition: all 0.3s ease;
 }
 
-/* Hover Effect */
 .menu a:hover {
   background-color: #555;
   color: #ffcc00;
   transform: scale(1.05);
 }
 
-/* Search Bar */
 .search-container {
   display: flex;
   align-items: center;
@@ -118,11 +137,9 @@ nav {
   border-radius: 10px;
   border: none;
   font-size: 1rem;
-  margin-left: 2px; /* Add some spacing between the navbar and the search bar */
-  margin-right: 2px;
+  margin: 0 2px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .menu {
     flex-direction: column;
