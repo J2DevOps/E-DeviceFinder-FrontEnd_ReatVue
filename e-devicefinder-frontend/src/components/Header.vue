@@ -9,7 +9,7 @@
 
       
 
-      <ul class="menu nav-items">      
+      <ul class="menu">      
         <li><a href="#">Home</a></li>
         
 
@@ -66,9 +66,6 @@ nav {
   width: 100vw;
 }
 
-.nav-items{
-  margin-right: 500px;
-}
 
 .logo {
   width: 50px; /* Adjust the size of the logo */
