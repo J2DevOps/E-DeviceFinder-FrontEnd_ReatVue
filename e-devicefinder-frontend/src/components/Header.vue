@@ -8,8 +8,13 @@
       </div>
 
       <ul class="menu nav-items">
-        <!-- If on /admin route, show only Home + Logout -->
-        <li v-if="isAdmin" class="logout"><a href="#" @click.prevent="logout">Logout</a></li>
+        <!-- If on /admin route, show Create Report + Logout on the right -->
+        <li v-if="isAdmin" class="create-report">
+          <a href="#" @click.prevent="createReport">Create Report</a>
+        </li>
+        <li v-if="isAdmin" class="logout">
+          <a href="#" @click.prevent="logout">Logout</a>
+        </li>
 
         <!-- If not admin, show full menu -->
         <template v-else>
@@ -47,7 +52,8 @@ const router = useRouter()
 const searchTerm = ref('')
 
 // Computed to check if we're on the /admin route
-const isAdmin = computed(() => route.path === '/admin')
+const isAdmin = computed(() => route.path.startsWith('/admin'))
+
 
 // Handle the search query and emit it
 const handleSearch = () => {
@@ -55,8 +61,13 @@ const handleSearch = () => {
   emit('update:search', searchTerm.value)
 }
 
+// Create Report functionality
+const createReport = () => {
+  router.push('/admin/create-report') // This should now properly route to the ReportForm component
+}
+
 function logout() {
-  router.push('/')
+  router.push('/') // Navigate to the home page after logout
 }
 </script>
 
@@ -75,13 +86,18 @@ function logout() {
 
 nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Align logo to the left, menu to the right */
   align-items: center;
   width: 100vw;
 }
 
 .nav-items {
-  margin-right: 500px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end; /* Align the menu to the right */
+  align-items: center;
 }
 
 .logo {
@@ -92,11 +108,7 @@ nav {
 }
 
 .menu {
-  list-style-type: none;
-  margin-right: 0;
-  padding: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-grow: 1;
 }
@@ -105,8 +117,9 @@ nav {
   margin: 0 10px;
 }
 
-.menu li.logout {
-  margin-left: auto; /* Align logout to the right */
+.menu li.logout,
+.menu li.create-report {
+  margin-left: 15px; /* Space between Create Report and Logout */
 }
 
 .menu a {
@@ -165,3 +178,4 @@ nav {
   }
 }
 </style>
+

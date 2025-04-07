@@ -21,7 +21,7 @@
         </thead>
         <tbody>
           <tr v-for="(user, index) in users" :key="index">
-            <td>{{ user.name }}</td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
             <td>{{ user.email }}</td>
             <td class="text-right relative">
               <button @click="toggleDropdown(index)" class="action-btn">
@@ -29,8 +29,7 @@
               </button>
               <div v-if="activeDropdown === index" class="dropdown">
                 <ul>
-                  <li @click="handleAction(user, 'approve')">Approve</li>
-                  <li @click="handleAction(user, 'decline')">Decline</li>
+                  <li @click="handleAction(user, 'Edit')">Decline</li>
                   <li @click="handleAction(user, 'delete')">Delete</li>
                 </ul>
               </div>
@@ -47,16 +46,24 @@
         <thead>
           <tr>
             <th>Title</th>
+            <th>Description</th>
+            <th>Report Type</th>
             <th>Status</th>
+            <th>Actions</th>
+
           </tr>
         </thead>
         <tbody>
           <tr v-for="(report, index) in reports" :key="index">
             <td>{{ report.title }}</td>
+            <td>{{ report.description }}</td>
+            <td>{{ getReportType(report.itemCategory) }}</td>
             <td>{{ report.status }}</td>
+            
           </tr>
         </tbody>
       </table>
+      
     </div>
 
     <!-- Approved Reports -->
@@ -96,32 +103,68 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import ReportForm from '../components/ReportForm.vue'
 
 const currentView = ref('users')
 const activeDropdown = ref(null)
+const users = ref([])
+const reports = ref([])
 
-const users = ref([
-  { name: 'Alice Doe', email: 'alice@example.com' },
-  { name: 'Bob Smith', email: 'bob@example.com' },
-  { name: 'Charlie Ray', email: 'charlie@example.com' },
-])
+const router = useRouter()
 
-const reports = ref([
-  { title: 'Lost Phone', status: 'pending' },
-  { title: 'Laptop Missing', status: 'approved' },
-  { title: 'Tablet Lost', status: 'rejected' },
-])
+function goToCreateReport() {
+  router.push('/create-report')
+}
 
-const approvedReports = computed(() => reports.value.filter(r => r.status === 'approved'))
-const rejectedReports = computed(() => reports.value.filter(r => r.status === 'rejected'))
+const approvedReports = computed(() =>
+  reports.value.filter((r) => r.status === 'approved')
+)
+const rejectedReports = computed(() =>
+  reports.value.filter((r) => r.status === 'rejected')
+)
+
+onMounted(async () => {
+  try {
+    const userResponse = await axios.get(
+      'https://localhost:7130/api/User/users'
+    )
+    if (userResponse.status === 200 && userResponse.data.result) {
+      users.value = userResponse.data.result
+    } else {
+      console.error('Failed to load users:', userResponse.data.message)
+    }
+
+    const reportResponse = await axios.get(
+      'https://localhost:7130/api/Report/reports'
+    )
+    if (reportResponse.status === 200 && reportResponse.data.result) {
+      reports.value = reportResponse.data.result.map((report) => ({
+        ...report,
+        status: 'pending',
+      }))
+    } else {
+      console.error('Failed to load reports:', reportResponse.data.message)
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
+})
+
+function getReportType(itemCategoryCode) {
+  if (itemCategoryCode === 0) return 'Lost'
+  if (itemCategoryCode === 1) return 'Stolen'
+  return 'Unknown'
+}
 
 function toggleDropdown(index) {
   activeDropdown.value = activeDropdown.value === index ? null : index
 }
 
 function handleAction(user, action) {
-  alert(`${action.toUpperCase()} user: ${user.name}`)  // Fixed template literal syntax
+  alert(`${action.toUpperCase()} user: ${user.firstName} ${user.lastName}`)
   activeDropdown.value = null
 }
 </script>
