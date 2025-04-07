@@ -18,7 +18,7 @@ const route = useRoute()
 
     <!-- Login Card (no background) -->
     <LoginCard v-if="showLogin" class="login-modal" @click.self="showLogin = false" @close="showLogin = false" />
-
+    
    <!-- Body Content (only show for non-admin routes) -->
 <template v-if="!route.path.startsWith('/admin')">
   <ItemContainer />
@@ -27,6 +27,7 @@ const route = useRoute()
     <p>Register to Track or Report Lost Items</p>
   </main>
 </template>
+
 
     <!-- Router View for Admin Page or other routes -->
     <router-view />
@@ -70,3 +71,4 @@ const route = useRoute()
   padding: 10px 0;
 }
 </style>
+
