@@ -129,7 +129,7 @@ const rejectedReports = computed(() =>
 onMounted(async () => {
   try {
     const userResponse = await axios.get(
-      'https://localhost:7130/api/User/users'
+      'https://efapi20250412004655.azurewebsites.net/api/User/users'
     )
     if (userResponse.status === 200 && userResponse.data.result) {
       users.value = userResponse.data.result
@@ -138,7 +138,7 @@ onMounted(async () => {
     }
 
     const reportResponse = await axios.get(
-      'https://localhost:7130/api/Report/reports'
+      'https://efapi20250412004655.azurewebsites.net/api/Report/reports'
     )
     if (reportResponse.status === 200 && reportResponse.data.result) {
       reports.value = reportResponse.data.result.map((report) => ({
