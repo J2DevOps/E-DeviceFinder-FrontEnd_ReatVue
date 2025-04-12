@@ -29,7 +29,7 @@
               @input="handleSearch"
             />
           </li>
-          <li><a href="#about">About Us</a></li>
+         <li><router-link to="/aboutus">About Us</router-link></li>
           <li><a href="#contact">Contact Us</a></li>
           <li>
             <a href="#" @click.prevent="$emit('show-login')">Login</a>
@@ -69,6 +69,11 @@ const createReport = () => {
 function logout() {
   router.push('/') // Navigate to the home page after logout
 }
+
+function AboutUs() {
+  router.push('/aboutus') // Navigate to the home page after logout
+}
+
 </script>
 
 <style scoped>
