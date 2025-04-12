@@ -12,7 +12,11 @@
           <label for="password">Password</label>
           <input type="password" v-model="password" id="password" required />
         </div>
-        <button type="submit" class="login-btn">Login</button>
+
+        <div class="button-group">
+          <button type="submit" class="login-btn">Login</button>
+          <button type="button" class="cancel-btn" @click="emit('close')">Cancel</button>
+        </div>
       </form>
     </div>
   </div>
@@ -21,20 +25,35 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const email = ref('')
 const password = ref('')
-const router = useRouter() 
+const router = useRouter()
 const emit = defineEmits(['close'])
 
-function handleLogin() {
-  // Simulated login check (add real logic later)
-  if (email.value && password.value) {
-    // Navigate to Admin Page
-    router.push('/admin')
-    emit('close') 
-  } else {
+async function handleLogin() {
+  if (!email.value || !password.value) {
     alert('Please enter both email and password')
+    return
+  }
+
+  try {
+    const response = await axios.post('https://efapi20250412004655.azurewebsites.net/api/User/login', {
+      email: email.value,
+      password: password.value
+    })
+
+    if (response.status === 200) {
+      // Optionally store user data/token here
+      router.push('/admin')
+      emit('close')
+    } else {
+      alert('Invalid credentials')
+    }
+  } catch (error) {
+    console.error('Login failed:', error)
+    alert('Login failed. Please try again.')
   }
 }
 </script>
@@ -48,8 +67,7 @@ function handleLogin() {
   height: 62vh;
   padding: 1rem;
   border-radius: 12px;
-  opacity: 2.8; /* Reduces opacity to 80% */
-
+  opacity: 2.8;
 }
 
 .login-card {
@@ -86,6 +104,13 @@ function handleLogin() {
   font-size: 1rem;
 }
 
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
 .login-btn {
   width: 100%;
   padding: 10px;
@@ -102,5 +127,22 @@ function handleLogin() {
 .login-btn:hover {
   background-color: #666;
   color: #ffcc00;
+}
+
+.cancel-btn {
+  width: 100%;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  background-color: transparent;
+  border: 1px solid #ffcc00;
+  color: #ffcc00;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #ffcc00;
+  color: #333;
 }
 </style>

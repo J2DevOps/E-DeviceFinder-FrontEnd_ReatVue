@@ -5,10 +5,11 @@ import Header from './components/Header.vue'
 import LoginCard from './components/LoginCard.vue'
 import ItemContainer from './components/ItemContainer.vue'
 import RegisterButton from './components/RegistrationButton.vue'
+import SignUp from './components/SignUp.vue'
 
 const showLogin = ref(false)
+const showRegister = ref(false)
 const route = useRoute()
-
 </script>
 
 <template>
@@ -16,20 +17,32 @@ const route = useRoute()
     <!-- Header -->
     <Header @show-login="showLogin = true" />
 
-    <!-- Login Card (no background) -->
-    <LoginCard v-if="showLogin" class="login-modal" @click.self="showLogin = false" @close="showLogin = false" />
-    
-   <!-- Body Content (only show for non-admin routes) -->
-<template v-if="!route.path.startsWith('/admin')">
-  <ItemContainer />
-  <RegisterButton />
-  <main class="content">
-    <p>Register to Track or Report Lost Items</p>
-  </main>
-</template>
+    <!-- Login Modal -->
+    <LoginCard
+      v-if="showLogin"
+      class="login-modal"
+      @click.self="showLogin = false"
+      @close="showLogin = false"
+    />
 
+    <!-- Signup Modal -->
+    <SignUp
+      v-if="showRegister"
+      class="login-modal"
+      @click.self="showRegister = false"
+      @close="showRegister = false"
+    />
 
-    <!-- Router View for Admin Page or other routes -->
+    <!-- Main content for non-admin routes -->
+    <template v-if="!route.path.startsWith('/admin')">
+      <ItemContainer />
+      <RegisterButton @show-register="showRegister = true" />
+      <main class="content">
+        <p>Register to Track or Report Lost Items</p>
+      </main>
+    </template>
+
+    <!-- Router View -->
     <router-view />
 
     <!-- Footer -->
@@ -48,7 +61,6 @@ const route = useRoute()
   overflow-x: hidden;
 }
 
-/* Only center the card with no overlay */
 .login-modal {
   position: fixed;
   top: 50%;
@@ -57,7 +69,6 @@ const route = useRoute()
   z-index: 999;
 }
 
-/* Main content */
 .content {
   flex: 1;
   padding: 20px;
@@ -71,4 +82,3 @@ const route = useRoute()
   padding: 10px 0;
 }
 </style>
-
