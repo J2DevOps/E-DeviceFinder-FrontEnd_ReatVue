@@ -33,8 +33,8 @@ const route = useRoute()
       @close="showRegister = false"
     />
 
-    <!-- Main content for non-admin and non-aboutus routes -->
-    <template v-if="!route.path.startsWith('/admin') && route.path !== '/aboutus'">
+    <!-- Main content: Only show on homepage '/' -->
+    <template v-if="route.path === '/'">
       <ItemContainer />
       <RegisterButton @show-register="showRegister = true" />
       <main class="content">
@@ -42,7 +42,7 @@ const route = useRoute()
       </main>
     </template>
 
-    <!-- Routed pages like /aboutus and /admin will render here -->
+    <!-- Routed pages render here -->
     <router-view />
 
     <!-- Footer -->

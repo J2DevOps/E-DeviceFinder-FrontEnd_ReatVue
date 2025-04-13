@@ -30,7 +30,8 @@
             />
           </li>
          <li><router-link to="/aboutus">About Us</router-link></li>
-          <li><a href="#contact">Contact Us</a></li>
+         <li><router-link to="/contactus">Contact Us</router-link></li>
+         
           <li>
             <a href="#" @click.prevent="$emit('show-login')">Login</a>
           </li>
@@ -71,7 +72,10 @@ function logout() {
 }
 
 function AboutUs() {
-  router.push('/aboutus') // Navigate to the home page after logout
+  router.push('/aboutus') // Navigate to the about us page after logout
+}
+function ContactUs() {
+  router.push('/contactus') // Navigate to the contact us page after logout
 }
 
 </script>
