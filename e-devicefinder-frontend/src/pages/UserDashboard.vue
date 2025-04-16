@@ -15,7 +15,7 @@
     <main class="main-content">
       <header class="dashboard-header">
         <h1>Welcome, User</h1>
-        <button class="logout-btn">Logout</button>
+        <button class="logout-btn">Create report</button>
       </header>
 
       <section class="cards">

@@ -8,19 +8,18 @@
       </div>
 
       <ul class="menu nav-items">
-        <!-- If on /admin route, show Create Report + Logout on the right -->
-        <li v-if="isAdmin" class="create-report">
+        <!-- For Admin or User routes: show Create Report + Logout -->
+        <li v-if="isAdmin || isUser" class="create-report">
           <a href="#" @click.prevent="createReport">Create Report</a>
         </li>
-        <li v-if="isAdmin" class="logout">
+        <li v-if="isAdmin || isUser" class="logout">
           <a href="#" @click.prevent="logout">Logout</a>
         </li>
 
-        <!-- If not admin, show full menu -->
+        <!-- Public nav when not on /admin or /user routes -->
         <template v-else>
           <li><router-link to="/">Home</router-link></li>
           <li class="search-container">
-            <!-- Bind input value to searchTerm -->
             <input 
               type="text" 
               placeholder="Search items..." 
@@ -45,29 +44,34 @@ import logo from '../assets/images/trackit-logo.png'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 
+const emit = defineEmits(['show-login', 'update:search'])
+
 const route = useRoute()
 const router = useRouter()
 
-// Reactive data for search term
 const searchTerm = ref('')
 
-// Computed to check if we're on the /admin route
+// Check if we're on admin or user route
 const isAdmin = computed(() => route.path.startsWith('/admin'))
+const isUser = computed(() => route.path.startsWith('/user'))
 
-
-// Handle the search query and emit it
+// Emit search term
 const handleSearch = () => {
-  // Emit the search term to parent component or handle the logic here
   emit('update:search', searchTerm.value)
 }
 
-// Create Report functionality
+// Navigation handlers
 const createReport = () => {
-  router.push('/admin/create-report') // This should now properly route to the ReportForm component
+  if (isAdmin.value) {
+    router.push('/admin/create-report')
+  } else if (isUser.value) {
+    router.push('/user/create-report')
+  }
 }
 
-function logout() {
-  router.push('/') // Navigate to the home page after logout
+const logout = () => {
+  router.push('/')
+  // Optionally clear auth tokens here
 }
 </script>
 
@@ -86,7 +90,7 @@ function logout() {
 
 nav {
   display: flex;
-  justify-content: space-between; /* Align logo to the left, menu to the right */
+  justify-content: space-between;
   align-items: center;
   width: 100vw;
 }
@@ -96,7 +100,7 @@ nav {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: flex-end; /* Align the menu to the right */
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -119,7 +123,7 @@ nav {
 
 .menu li.logout,
 .menu li.create-report {
-  margin-left: 15px; /* Space between Create Report and Logout */
+  margin-left: 15px;
 }
 
 .menu a {
@@ -176,6 +180,9 @@ nav {
     font-size: 0.9rem;
     padding: 8px;
   }
+
+  .search-bar {
+    width: 250px;
+  }
 }
 </style>
-

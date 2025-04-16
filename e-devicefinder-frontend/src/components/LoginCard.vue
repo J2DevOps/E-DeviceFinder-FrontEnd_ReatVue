@@ -37,20 +37,28 @@ async function handleLogin() {
     alert('Please enter both email and password')
     return
   }
-
-  try {
-    const response = await axios.post('https://efapi20250412004655.azurewebsites.net/api/User/login', {
+try {
+    const response = await axios.post('https://localhost:7130/api/User/login', {
       email: email.value,
       password: password.value
     })
 
-    if (response.status === 200) {
-      // Optionally store user data/token here
-      router.push('/admin')
-      emit('close')
-    } else {
-      alert('Invalid credentials')
+    console.log('Response data:', response.data)
+
+    const userRole = response.data.userRole
+
+    if (!userRole) {
+      alert('User role missing in response.')
+      return
     }
+
+    if (userRole === 'Admin') {
+      router.push('/admin')
+    } else if (userRole === 'User') {
+      router.push('/user')
+    }
+
+    emit('close')
   } catch (error) {
     console.error('Login failed:', error)
     alert('Login failed. Please try again.')

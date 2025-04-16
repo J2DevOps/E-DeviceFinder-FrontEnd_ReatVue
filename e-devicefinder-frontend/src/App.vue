@@ -33,8 +33,8 @@ const route = useRoute()
       @close="showRegister = false"
     />
 
-    <!-- Main content for non-admin routes -->
-    <template v-if="!route.path.startsWith('/admin')">
+    <!-- Main content for non-admin and non-user routes -->
+    <template v-if="!route.path.startsWith('/admin') && !route.path.startsWith('/user')">
       <ItemContainer />
       <RegisterButton @show-register="showRegister = true" />
       <main class="content">
