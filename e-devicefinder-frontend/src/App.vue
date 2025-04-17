@@ -33,8 +33,8 @@ const route = useRoute()
       @close="showRegister = false"
     />
 
-    <!-- Main content: Only show on homepage '/' -->
-    <template v-if="route.path === '/'">
+    <!-- Main content for non-admin and non-user routes -->
+    <template v-if="!route.path.startsWith('/admin') && !route.path.startsWith('/user')">
       <ItemContainer />
       <RegisterButton @show-register="showRegister = true" />
       <main class="content">
@@ -42,12 +42,12 @@ const route = useRoute()
       </main>
     </template>
 
-    <!-- Routed pages render here -->
+    <!-- Router View -->
     <router-view />
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2025 J2Devops. All rights reserved.</p>
+      <p>&copy; 2023 Your Company. All rights reserved.</p>
     </footer>
   </div>
 </template>
