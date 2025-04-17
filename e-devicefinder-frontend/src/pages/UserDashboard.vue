@@ -14,8 +14,7 @@
     <!-- Main Content -->
     <main class="main-content">
       <header class="dashboard-header">
-        <h1>Welcome, User</h1>
-        <button class="logout-btn">Logout</button>
+        <h1>Welcome, {{ username }}</h1>
       </header>
 
       <section class="cards">
@@ -37,7 +36,18 @@
 </template>
 
 <script setup>
-// This is a UI component — dynamic data can be plugged in later with props or Vuex/pinia.
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// Get the username from localStorage
+const username = ref(localStorage.getItem('username') || 'User')
+
+const logout = () => {
+  localStorage.removeItem('username') // Clear stored username
+  router.push('/') // Redirect to home or login
+}
 </script>
 
 <style scoped>
@@ -145,4 +155,3 @@
   transform: translateY(-5px);
 }
 </style>
-
