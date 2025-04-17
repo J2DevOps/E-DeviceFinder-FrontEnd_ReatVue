@@ -39,21 +39,33 @@ async function handleLogin() {
   }
 
   try {
-    const response = await axios.post('https://efapi20250412004655.azurewebsites.net/api/User/login', {
+    const response = await axios.post('https://localhost:7130/api/User/login', {
       email: email.value,
       password: password.value
     })
 
-    if (response.status === 200) {
-      // Optionally store user data/token here
+    console.log('Login Response:', response.data)
+
+    const userRole = response.data.userRole
+    const userInfo = response.data.userRsponse
+
+    const fullName = `${userInfo.firstName ?? ''} ${userInfo.lastName ?? ''}`.trim()
+
+    // Store full name in localStorage for dashboard
+    localStorage.setItem('username', fullName)
+
+    if (userRole === 'Admin') {
       router.push('/admin')
-      emit('close')
+    } else if (userRole === 'User') {
+      router.push('/user')
     } else {
-      alert('Invalid credentials')
+      alert('Unknown user role. Contact admin.')
     }
+
+    emit('close')
   } catch (error) {
     console.error('Login failed:', error)
-    alert('Login failed. Please try again.')
+    alert('Invalid credentials. Please try again.')
   }
 }
 </script>
@@ -67,7 +79,6 @@ async function handleLogin() {
   height: 62vh;
   padding: 1rem;
   border-radius: 12px;
-  opacity: 2.8;
 }
 
 .login-card {
