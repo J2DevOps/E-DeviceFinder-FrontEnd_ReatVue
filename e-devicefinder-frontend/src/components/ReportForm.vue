@@ -26,14 +26,10 @@
         ></textarea>
       </div>
 
-      <!-- Report Type (Dropdown) -->
+      <!-- Report Type -->
       <div class="form-group">
         <label for="type">Report Type</label>
-        <select
-          id="type"
-          v-model="formData.type"
-          required
-        >
+        <select id="type" v-model="formData.type" required>
           <option value="">Select Report Type</option>
           <option value="Lost">Lost</option>
           <option value="Found">Found</option>
@@ -55,20 +51,13 @@
         />
 
         <!-- Item Category -->
-        <div>
-          <label for="category">Item Category</label>
-          <select
-            id="category"
-            v-model="formData.item.category"
-            required
-          >
-            <option value="">Select Category</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Documents">Documents</option>
-            <!-- Add more options as needed -->
-          </select>
-        </div>
+        <label for="category">Item Category</label>
+        <select id="category" v-model="formData.item.category" required>
+          <option value="">Select Category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Documents">Documents</option>
+        </select>
 
         <!-- Item Description -->
         <label for="itemDescription">Item Description</label>
@@ -85,7 +74,7 @@
           type="text"
           id="serialNumber"
           v-model="formData.item.serialNumber"
-          placeholder="Enter the serial number of the item"
+          placeholder="Optional"
           required
         />
 
@@ -106,48 +95,87 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const formData = ref({
   title: '',
   description: '',
-  type: '', // Lost or Found
+  category: '',
+  type: '',
+  userId: '',
   item: {
     name: '',
-    category: '', // Electronics, Accessories, etc.
+    category: '',
     description: '',
     serialNumber: '',
-    image: null, // File object
+    image: null,
+    userId: '',
   },
-  userId: '',
 })
 
-// Handle image file change (for file input)
-const handleImageChange = (event) => {
-  const file = event.target.files[0]
+const handleImageChange = (e) => {
+  const file = e.target.files[0]
   if (file) {
     formData.value.item.image = file
   }
 }
 
-// Handle form submission
-const handleSubmit = () => {
-  // Create the form data object to send to the API
-  const reportRequest = {
-    ...formData.value,
-    item: {
-      ...formData.value.item,
-      image: formData.value.item.image, // You might need to upload this image separately or handle as base64 string
-    },
+const handleSubmit = async () => {
+  const storedUserId = localStorage.getItem('UserId')
+
+  if (!storedUserId) {
+    alert('User not authenticated. Please log in again.')
+    return
   }
 
-  // Example of logging the report to the console for now
-  console.log('Report submitted:', reportRequest)
+  formData.value.userId = storedUserId
+  formData.value.item.userId = storedUserId
 
-  // You can send this data to the backend using axios or fetch
-  // For example, if you have an API endpoint, you would call:
-  // axios.post('YOUR_API_URL', reportRequest).then(response => {
-  //   console.log('Response from server:', response.data)
-  // })
+  const form = new FormData()
+
+  const categoryEnumMap = {
+    Electronics: 1,
+    Documents: 2,
+    Accessories: 3,
+  }
+
+  const reportTypeEnumMap = {
+    Lost: 1,
+    Found: 2,
+  }
+
+  form.append('Title', formData.value.title)
+  form.append('Description', formData.value.description)
+  form.append('Category', categoryEnumMap[formData.value.item.category])
+  form.append('Type', reportTypeEnumMap[formData.value.type])
+  form.append('UserId', formData.value.userId)
+
+  form.append('Item.Name', formData.value.item.name)
+  form.append('Item.Category', categoryEnumMap[formData.value.item.category])
+  form.append('Item.Description', formData.value.item.description)
+  form.append('Item.SerialNumber', formData.value.item.serialNumber)
+  form.append('Item.UserId', formData.value.item.userId)
+
+  if (formData.value.item.image) {
+    form.append('Item.Image', formData.value.item.image)
+  }
+
+  try {
+    const response = await axios.post('https://localhost:7130/api/Report', form, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+
+    console.log('Success:', response.data)
+    router.push('/admin') // 👈 Redirect to Admin page
+  } catch (error) {
+    console.error('Submission error:', error)
+    alert('Failed to submit report.')
+  }
 }
 </script>
 
@@ -174,7 +202,7 @@ label {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   display: block;
-  text-align: left; /* Ensure label text is aligned to the left */
+  text-align: left;
 }
 
 input[type="text"],
