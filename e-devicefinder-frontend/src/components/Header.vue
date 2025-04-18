@@ -70,9 +70,18 @@ const createReport = () => {
 }
 
 const logout = () => {
+  // Clear all stored user info
+  localStorage.removeItem('UserId')
+  localStorage.removeItem('userRole')
+  localStorage.removeItem('token')
+
+  // Optionally clear everything
+  // localStorage.clear()
+
+  // Redirect to home or login page
   router.push('/')
-  // Optionally clear auth tokens here
 }
+
 </script>
 
 <style scoped>

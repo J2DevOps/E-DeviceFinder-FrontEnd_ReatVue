@@ -46,14 +46,21 @@ async function handleLogin() {
 
     console.log('Login Response:', response.data)
 
-    const userRole = response.data.userRole
     const userInfo = response.data.userRsponse
+    const userRole = response.data.userRole
+    const userId = userInfo.id
+    const token = response.data.token
 
     const fullName = `${userInfo.firstName ?? ''} ${userInfo.lastName ?? ''}`.trim()
 
-    // Store full name in localStorage for dashboard
-    localStorage.setItem('username', fullName)
+    // Store UserId and token
+    localStorage.setItem('UserId', userId)
+    localStorage.setItem('token', token)
+    localStorage.setItem('userEmail', userInfo.email)
+    localStorage.setItem('userRole', userRole)
+    localStorage.setItem('userName', fullName)
 
+    // Redirect based on role
     if (userRole === 'Admin') {
       router.push('/admin')
     } else if (userRole === 'User') {
