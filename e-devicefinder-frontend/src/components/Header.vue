@@ -19,17 +19,8 @@
         <!-- Public nav when not on /admin or /user routes -->
         <template v-else>
           <li><router-link to="/">Home</router-link></li>
-          <li class="search-container">
-            <input 
-              type="text" 
-              placeholder="Search items..." 
-              class="search-bar" 
-              v-model="searchTerm"
-              @input="handleSearch"
-            />
-          </li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#" @click.prevent="goToAboutUs">About Us</a></li>
+          <li><a href="#" @click.prevent="goToContactUs">Contact Us</a></li>
           <li>
             <a href="#" @click.prevent="$emit('show-login')">Login</a>
           </li>
@@ -55,11 +46,6 @@ const searchTerm = ref('')
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 const isUser = computed(() => route.path.startsWith('/user'))
 
-// Emit search term
-const handleSearch = () => {
-  emit('update:search', searchTerm.value)
-}
-
 // Navigation handlers
 const createReport = () => {
   if (isAdmin.value) {
@@ -70,18 +56,19 @@ const createReport = () => {
 }
 
 const logout = () => {
-  // Clear all stored user info
   localStorage.removeItem('UserId')
   localStorage.removeItem('userRole')
   localStorage.removeItem('token')
-
-  // Optionally clear everything
-  // localStorage.clear()
-
-  // Redirect to home or login page
   router.push('/')
 }
 
+const goToAboutUs = () => {
+  router.push('/aboutus')
+}
+
+const goToContactUs = () => {
+  router.push('/contactus')
+}
 </script>
 
 <style scoped>

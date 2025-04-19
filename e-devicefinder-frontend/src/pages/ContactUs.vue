@@ -35,13 +35,6 @@
 </script>
 
 <style scoped>
-.contact-container {
-  background-color: #333;
-  color: white;
-  padding: 2rem;
-  border-radius: 12px;
-}
-
 .contact-text {
   background-color: #444;
   padding: 1.5rem;
