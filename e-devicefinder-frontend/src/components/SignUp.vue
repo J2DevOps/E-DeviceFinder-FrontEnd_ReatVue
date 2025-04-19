@@ -91,22 +91,14 @@ async function handleSignUp() {
 </script>
 
 <style scoped>
-.signup-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #333;
-  height: 90vh;
-  padding: 1rem;
-  border-radius: 12px;
-}
+
 
 .signup-card {
   background-color: #444;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  width: 100%;
+  width: 80%;
   max-width: 400px;
   color: white;
   position: relative;

@@ -1,77 +1,133 @@
 <template>
   <div class="items-container">
-    <div class="column">
-      <h2>Missing Items</h2>
-      <swiper :slidesPerView="1" :loop="true" :autoplay="{ delay: 3000 }">
-        <swiper-slide v-for="(item, index) in missingItems" :key="index">
-          <img :src="item.image" :alt="item.alt" />
-        </swiper-slide>
-      </swiper>
+    <!-- Login Modal -->
+    <div v-if="showLogin" class="modal-overlay" @click.self="$emit('close-login')">
+      <LoginCard @close="$emit('close-login')" />
     </div>
 
-    <div class="column">
-      <h2>Found Items</h2>
-      <swiper :slidesPerView="1" :loop="true" :autoplay="{ delay: 3000 }">
-        <swiper-slide v-for="(item, index) in foundItems" :key="index">
-          <img :src="item.image" :alt="item.alt" />
-        </swiper-slide>
-      </swiper>
+    <!-- Signup Modal -->
+    <div v-if="showRegister" class="modal-overlay" @click.self="$emit('close-register')">
+      <SignUp @close="$emit('close-register')" />
     </div>
+
+    <!-- Search Results Table -->
+    <div v-if="searchResults && searchResults.length > 0" class="search-results">
+      <h2>Search Results</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in searchResults" :key="index">
+            <td><img :src="item.imageUrl" alt="item" class="table-img" /></td>
+            <td>{{ item.name }}</td>
+            <td>{{ getCategoryName(item.category) }}</td>
+            <td>{{ item.description }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Default Swipers -->
+    <template v-else>
+      <div class="column">
+        <h2>Missing Items</h2>
+        <swiper :slidesPerView="1" :loop="true" :autoplay="{ delay: 3000 }">
+          <swiper-slide v-for="(item, index) in missingItems" :key="index">
+            <img :src="item.image" :alt="item.alt" />
+          </swiper-slide>
+        </swiper>
+      </div>
+
+      <div class="column">
+        <h2>Found Items</h2>
+        <swiper :slidesPerView="1" :loop="true" :autoplay="{ delay: 3000 }">
+          <swiper-slide v-for="(item, index) in foundItems" :key="index">
+            <img :src="item.image" :alt="item.alt" />
+          </swiper-slide>
+        </swiper>
+      </div>
+    </template>
   </div>
 </template>
 
-
 <script>
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/css'; // Correct import for Swiper core styles
-import 'swiper/css/autoplay'; // Import Autoplay styles if you're using autoplay
-import download from '../assets/images/download.jpeg';
-import Image2 from '../assets/images/Image2.jpeg';
-import Image3 from '../assets/images/Image3.jpeg';
-import Image4 from '../assets/images/Image4.jpeg';
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/autoplay'
+
+import LoginCard from './LoginCard.vue'
+import SignUp from './SignUp.vue'
+import download from '../assets/images/download.jpeg'
+import Image2 from '../assets/images/Image2.jpeg'
+import Image3 from '../assets/images/Image3.jpeg'
+import Image4 from '../assets/images/Image4.jpeg'
 
 export default {
-  name: 'ItemsContainer',
+  name: 'ItemContainer',
   components: {
     Swiper,
     SwiperSlide,
+    LoginCard,
+    SignUp,
+  },
+  props: {
+    searchResults: {
+      type: Array,
+      default: () => [],
+    },
+    showLogin: {
+      type: Boolean,
+      default: false,
+    },
+    showRegister: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup() {
+    return { modules: [Autoplay] }
   },
   data() {
     return {
       missingItems: [
-        { 
-          image: download, 
-          alt: 'missing-item-1' 
-        },
-        { 
-          image: Image2, 
-          alt: 'missing-item-2' 
-        },
+        { image: download, alt: 'missing-item-1' },
+        { image: Image2, alt: 'missing-item-2' },
       ],
       foundItems: [
-        { 
-          image: Image3, 
-          alt: 'found-item-1' 
-        },
-        { 
-          image: Image4, 
-          alt: 'found-item-2' 
-        },
+        { image: Image3, alt: 'found-item-1' },
+        { image: Image4, alt: 'found-item-2' },
       ],
-    };
+      categoryMap: {
+        1: 'Electronics',
+        2: 'Documents',
+        3: 'Accessories',
+      },
+    }
   },
-};
+  methods: {
+    getCategoryName(code) {
+      return this.categoryMap[code] || 'Unknown'
+    },
+  },
+}
 </script>
 
 <style scoped>
-/* General Styling */
 .items-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
-  width: 90%;
-  margin: 40px auto; /* Centered container with spacing */
+  width: 70%;
+  margin: 40px auto;
+  position: relative;
 }
-
 .column {
   width: 45%;
   background-color: #fff;
@@ -79,59 +135,35 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
-
-.column:hover {
-  transform: translateY(-10px); /* Subtle hover effect */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.column h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.swiper {
+.search-results {
   width: 100%;
-  height: auto;
 }
-
-.swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
-
-.swiper-slide img {
-  width: 50%;
-  max-width: 100px; /* Restrict image size for consistency */
-  height: auto;
-  border-radius: 15px;
+th, td {
+  border: 1px solid #ccc;
+  padding: 12px;
+}
+.table-img {
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  transition: transform 0.5s ease-in-out;
+  border-radius: 8px;
 }
-
-.swiper-slide:hover img {
-  transform: scale(1.1); /* Zoom effect on hover */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .items-container {
-    flex-direction: column;
-    width: 95%;
-  }
-
-  .column {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .column h2 {
-    font-size: 1.2rem;
-  }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 </style>

@@ -41,12 +41,7 @@
 </script>
 
 <style scoped>
-.about-container {
-  background-color: #333;
-  color: white;
-  padding: 2rem;
-  border-radius: 12px;
-}
+
 
 .about-text {
   background-color: #444;
