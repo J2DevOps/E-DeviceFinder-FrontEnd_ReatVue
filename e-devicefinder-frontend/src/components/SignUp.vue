@@ -69,7 +69,7 @@ async function handleSignUp() {
     }
 
     const response = await axios.post(
-      'https://efapi20250412004655.azurewebsites.net/api/User/create',
+      'https://efapi20250420003137.azurewebsites.net/api/User/create',
       payload
     )
 

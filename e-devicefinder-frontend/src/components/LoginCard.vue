@@ -39,7 +39,7 @@ async function handleLogin() {
   }
 
   try {
-    const response = await axios.post('https://localhost:7130/api/User/login', {
+    const response = await axios.post('https://efapi20250420003137.azurewebsites.net/api/User/login', {
       email: email.value,
       password: password.value
     })
