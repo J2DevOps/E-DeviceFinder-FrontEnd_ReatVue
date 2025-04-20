@@ -21,7 +21,7 @@ const handleSearch = async (term) => {
   }
 
   try {
-    const response = await axios.get(`https://localhost:7130/api/Item/search?query=${term}`)
+    const response = await axios.get(`https://efapi20250420003137.azurewebsites.net/api/Item/search?query=${term}`)
     searchResults.value = response.data.result
   } catch (error) {
     console.error('Search failed:', error)
