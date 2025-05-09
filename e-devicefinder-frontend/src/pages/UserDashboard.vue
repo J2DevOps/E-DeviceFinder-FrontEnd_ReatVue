@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Get the username from localStorage
-const username = ref(localStorage.getItem('username') || 'User')
+const username = ref(localStorage.getItem('userName') || 'User')
 
 const logout = () => {
   localStorage.removeItem('username') // Clear stored username
