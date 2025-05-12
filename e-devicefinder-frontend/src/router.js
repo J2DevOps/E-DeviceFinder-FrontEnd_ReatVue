@@ -28,6 +28,12 @@ const routes = [
         path: '/admin/create-report',
         component: ReportForm,
         meta: { requiresAuth: true, requiresRole: 'Admin' }
+    },
+    // User report creation route - Requires Admin role
+    {
+        path: '/user/create-report',
+        component: ReportForm,
+        meta: { requiresAuth: true, requiresRole: 'User' }
     }
 ]
 
