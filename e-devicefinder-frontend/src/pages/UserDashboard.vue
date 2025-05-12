@@ -137,6 +137,7 @@ const claimItem = (item) => {
   isClaiming.value = true
 }
 
+
 // Submit the claim form to the API
 const submitClaim = async () => {
   try {
@@ -155,6 +156,7 @@ const submitClaim = async () => {
     console.error('Claim submission failed:', error)
   }
 }
+
 
 // Clear the claim form when the search box is empty
 const clearClaimForm = () => {
