@@ -1,9 +1,31 @@
 <template>
   <div class="admin-container">
+
+   <!-- Summary Cards -->
+    <section class="cards">
+      <div class="card">
+        <h3>Reports Submitted</h3>
+        <p>{{ reports.length }}</p>
+      </div>
+      <div class="card">
+        <h3>Items Found</h3>
+        <p>{{ approvedReports.length }}</p>
+      </div>
+      <div class="card">
+        <h3>Item Missing</h3>
+        <p>{{ approvedReports.length }}</p>
+      </div>
+      <div class="card">
+        <h3>Pending Approvals</h3>
+        <p>{{ reports.length - approvedReports.length - rejectedReports.length }}</p>
+      </div>
+    </section>
+
     <!-- Menu Tabs -->
     <div class="menu-tabs">
       <button @click="currentView = 'users'">Users</button>
       <button @click="currentView = 'reports'">Reports</button>
+      <button @click="currentView = 'claim'">Claims</button>
       <button @click="currentView = 'approved'">Approved</button>
       <button @click="currentView = 'rejected'">Rejected</button>
     </div>
@@ -38,6 +60,29 @@
         </tbody>
       </table>
     </div>
+   <div v-if="currentView === 'claim'">
+  <h2>Claims</h2>
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Item ID</th>
+        <th>Item Name</th>
+        <th>Claim Reason</th>
+        <th>Claim Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(claim, index) in claims" :key="index">
+        <td>{{ claim.itemId }}</td>
+        <td>{{ claim.itemName || 'Unknown Item' }}</td> <!-- Handle null -->
+        <td>{{ claim.claimReason }}</td>
+        <td>{{ new Date(claim.claimDate).toLocaleDateString() }}</td> <!-- Format date -->
+        <td>{{ claim.status || 'pending' }}</td> <!-- Fallback status -->
+      </tr>
+    </tbody>
+  </table>
+</div>
 
     <!-- Reports Table -->
     <div v-if="currentView === 'reports'">
@@ -112,6 +157,7 @@ const currentView = ref('users')
 const activeDropdown = ref(null)
 const users = ref([])
 const reports = ref([])
+const claims = ref([])
 
 const router = useRouter()
 
@@ -148,9 +194,23 @@ onMounted(async () => {
     } else {
       console.error('Failed to load reports:', reportResponse.data.message)
     }
+  const claimResponse = await axios.get(
+      'https://efapi20250503133217.azurewebsites.net/api/Claim '
+    )
+    console.log('Claim API response:', claimResponse)
+
+    if (claimResponse.status === 201 && claimResponse.data.result) {
+      claims.value = claimResponse.data.result.map((claim) => ({
+        ...claim,
+        itemName: claim.itemName || 'Unknown Item', // Handle null values
+        status: claim.status || 'pending',         // Provide fallback status
+      }))
+    }
+
   } catch (error) {
     console.error('Error fetching data:', error)
   }
+ 
 })
 
 function getReportType(itemCategoryCode) {
@@ -176,6 +236,37 @@ function handleAction(user, action) {
   padding: 2rem;
   min-height: 100vh;
 }
+.cards {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #444;
+  padding: 2rem;
+  border-radius: 12px;
+  flex: 1;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.card h3 {
+  margin-bottom: 1rem;
+  color: #ffcc00;
+}
+
+.card p {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
 
 .menu-tabs {
   display: flex;
